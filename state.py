@@ -7,8 +7,8 @@ piece_to_state = {'P': 1, 'R': 2, 'N': 4, 'B': 5, 'Q': 6, 'K': 7, \
 
 # holds current state of board, and serializes it according to README
 class State(object):
-    def __init__(self):
-        self.board = chess.Board()
+    def __init__(self, board=None):
+        self.board = chess.Board() if board is None else board
 
     # serialize current board state
     def serialize(self):
