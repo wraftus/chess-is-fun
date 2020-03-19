@@ -1,0 +1,46 @@
+chess_is_fun
+
+* "Simple" chess engine for fun
+* Start with one implementation, maybe try different ones down the road see which one is better
+
+* Resources:
+** https://en.wikipedia.org/wiki/Minimax
+** https://github.com/geohot/twitchchess
+** https://github.com/thomasahle/sunfish
+
+Implementation - attempt 1
+
+* Need some value function for board states
+** V = 1 -> win
+** V = 0 -> tie
+** V = -1 -> lose
+** Train NN to compute value function
+
+* To train NN we need to serialize the board state
+** Pieces
+*** Empty - 0x0
+*** Pawn - 0x1, 0x9
+*** Rook - 0x2, 0xA
+*** Knight - 0x4, 0xC
+*** Bishop - 0x5, 0xD
+*** Queen - 0x6, 0xE
+*** King - 0x7, 0xF
+
+** Other States
+*** Who's turn - extra 257th bit
+*** Pawn's first move available - can be infered from position of pawn
+*** Castle available - 0x3 and 0xB indaicate rooks that can be castled with 
+*** En Passent available - 0x8 behind a pawn indicates that pawn is vunerable
+
+** 8x8 Board
+** 2 players x 6 pieces + blank = 13 piece states (4 bits)
+** Who's turn -> 5th bit
+** 8x8x5 bit state 
+** (maybe try running CNN on board state without who's turn, but add it to the end of the linear layer) 
+
+
+
+Dependencies
+* python-chess
+* numpy
+* tensor-flow
