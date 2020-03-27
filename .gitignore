@@ -1,4 +1,6 @@
 *.swp
 __pycache__/
-pgns
-data
+.DS_Store
+train_pgns
+val_pgns
+datasets

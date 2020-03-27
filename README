@@ -8,6 +8,7 @@ chess_is_fun
 ** https://github.com/geohot/twitchchess
 ** https://github.com/thomasahle/sunfish
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Implementation - attempt 1
 
 * Need some value function for board states
@@ -38,7 +39,21 @@ Implementation - attempt 1
 ** 8x8x5 bit state 
 ** (maybe try running CNN on board state without who's turn, but add it to the end of the linear layer) 
 
+** Current NN sturctute
+*** 8x8x5 -> Conv2D (k=3, p=same, a=relu) -> 8x8x16
+*** 8x8x16 -> Conv2D (k=3, p=same, a=relu) -> 8x8x16
+*** 8x8x32 -> Conv2D (k=3, s=2, a=relu) -> 3x3x32
+*** 3x3x32 -> Conv2D (k=3, p=same, a=relu) -> 3x3x32
+*** 3x3x32 -> Conv2D (k=3, p=same, a=relu) -> 3x3x32
+*** 3x3x32 -> Conv2D (k=3, s=2, a=relu) -> 1x1x64
+*** 1x1x64 -> Flatten() -> 64
+*** 64 -> Dense(a=relu) -> 128
+*** 128 -> Dense(a=tanh) -> 1
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Dataset
+* https://archive.org/download/KingBase2018
 
 Dependencies
 * python-chess
