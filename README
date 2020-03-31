@@ -39,15 +39,16 @@ Implementation - attempt 1
 ** 8x8x5 bit state 
 ** (maybe try running CNN on board state without who's turn, but add it to the end of the linear layer) 
 
-** Current NN sturctute
+** Current network sturctute
 *** 8x8x5 -> Conv2D (k=3, p=same, a=relu) -> 8x8x16
-*** 8x8x16 -> Conv2D (k=3, p=same, a=relu) -> 8x8x16
-*** 8x8x32 -> Conv2D (k=3, s=2, a=relu) -> 3x3x32
-*** 3x3x32 -> Conv2D (k=3, p=same, a=relu) -> 3x3x32
+*** 8x8x16 -> Conv2D (k=3, s=2, a=relu) -> 3x3x32
 *** 3x3x32 -> Conv2D (k=3, p=same, a=relu) -> 3x3x32
 *** 3x3x32 -> Conv2D (k=3, s=2, a=relu) -> 1x1x64
-*** 1x1x64 -> Flatten() -> 64
-*** 64 -> Dense(a=relu) -> 128
+*** 1x1x64 -> Conv2D (k=2, p=1, a=relu) -> 2x2x64
+*** 2x2x64 -> Conv2D (k=2, a=relu) -> 1x1x128
+*** 1x1x128 -> Conv2D (k=1, p=1, a=relu) -> 1x1x128
+*** 1x1x128 -> Conv2D (k=1, p=1, a=relu) -> 1x1x128
+*** 1x1x128 -> Flatten() -> 128
 *** 128 -> Dense(a=tanh) -> 1
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

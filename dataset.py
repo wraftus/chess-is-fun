@@ -45,7 +45,7 @@ class ChessDataset(object):
                     board.push(move)
                     serialized = State(board).serialize()
                     X.append(serialized)
-                    y.append(value)#* (i/(num_moves-1)))
+                    y.append(value * (i/(num_moves-1)))
                 games += 1
                 print("Parsed game %d, dataset now has %d moves" % (games, len(X)))
                 
