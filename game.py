@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 import os
+import numpy as np
+import tensorflow as tf
+import chess
 from board import BoardWrapper
+from state import State
 
 class HumanPlayer(object):
     def __init__(self, colour):
@@ -28,11 +32,45 @@ class HumanPlayer(object):
 
             from_coord = from_col + 8 * from_row
             to_coord = to_col + 8 * to_row
-            return from_coord, to_coord
+            return chess.Move(from_coord, to_coord)
+
+class ComputerPlayer(object):
+        def __init__(self, colour, board):
+            self.colour = colour
+            self.board = board
+            self.model = tf.keras.models.load_model('state_model')
+
+        def get_next_move(self):
+            return self.minimax(1, True)[1]
+
+        def minimax(self, depth, is_max):
+            if self.board.is_game_over():
+                return { '1-0':1, '0-1':-1, '1/2-1/2':0 }[self.board.result()]
+            if depth <= 0:
+                state = np.expand_dims(State(self.board).serialize(), 0)
+                return self.model.predict(state)
+
+            val = -2 if is_max else 2
+            next_move = None
+            for move in self.board.legal_moves:
+                self.board.push(move)
+                if is_max:
+                    new_val = self.minimax(depth -1, not is_max)[0]
+                    if new_val > val:
+                        val = new_val
+                        next_move = move
+                else:
+                    new_val = self.minimax(depth -1, not is_max)[0]
+                    if new_val < val:
+                        val = new_val
+                        next_move = move
+                self.board.pop()
+
+            return val, next_move
 
 if __name__ == '__main__':
     board = BoardWrapper()
-    white_player = HumanPlayer(True)
+    white_player = ComputerPlayer(True, board.board)
     black_player = HumanPlayer(False)
     cur_player = white_player
 
@@ -40,8 +78,7 @@ if __name__ == '__main__':
         os.system('clear')
         board.draw()
         while(True):
-            from_coord, to_coord = cur_player.get_next_move()
-            if board.move(from_coord, to_coord, cur_player.colour):
+            if board.move(cur_player.get_next_move()):
                 break
             print("Not a valid move")
         cur_player = black_player if cur_player.colour else white_player

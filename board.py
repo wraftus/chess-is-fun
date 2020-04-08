@@ -53,8 +53,7 @@ class BoardWrapper(object):
         
         print(''.join(filled_board))
     
-    def move(self, from_coord, to_coord, colour):
-        move = chess.Move(from_coord, to_coord)
+    def move(self, move):
         if not move in self.board.legal_moves:
             return False
         self.board.push(move)
