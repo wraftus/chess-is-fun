@@ -41,8 +41,44 @@ class ComputerPlayer(object):
             self.model = tf.keras.models.load_model('state_model')
 
         def get_next_move(self):
-            return self.minimax(1, True)[1]
+            return self.alpha_beta_search(2, True, -2, 2)[1]
 
+        # minimax with alpha beta pruning
+        def alpha_beta_search(self, depth, is_max, alpha, beta):
+            # check if we're at a leaf node or if we're at our maximum depth
+            if self.board.is_game_over():
+                return { '1-0':1, '0-1':-1, '1/2-1/2':0 }[self.board.result()]
+            if depth <= 0:
+                state = np.expand_dims(State(self.board).serialize(), 0)
+                return self.model.predict(state)
+            
+            val = -2 if is_max else 2
+            next_move = None
+            for move in self.board.legal_moves:
+                self.board.push(move)
+                new_val = self.alpha_beta_search(depth-1, not is_max, alpha, beta)[0]
+                if is_max:
+                    alpha = max(new_val, alpha)
+                    if alpha >= beta:
+                        self.board.pop()
+                        break
+                    if new_val > val:
+                        val = new_val
+                        next_move = move
+                else:
+                    beta = min(new_val, beta)
+                    if beta <= alpha:
+                        self.board.pop()
+                        break
+                    if new_val < val:
+                        val = new_val
+                        next_move = move
+                self.board.pop()
+            
+            return val, next_move
+             
+
+        # old minimax function withouth alpha beta pruning
         def minimax(self, depth, is_max):
             if self.board.is_game_over():
                 return { '1-0':1, '0-1':-1, '1/2-1/2':0 }[self.board.result()]
